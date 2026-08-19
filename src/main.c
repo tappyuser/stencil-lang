@@ -3,11 +3,6 @@
 
 #include "string_util.h"
 
-void prints(char* arr, size_t size){
-	for (int i = 0; i < size; i++)	putchar(arr[i]);
-	putchar('\n');
-}
-
 int main (int argc, char** argv){
 	string_t arr;
 	string_new(&arr, 0);

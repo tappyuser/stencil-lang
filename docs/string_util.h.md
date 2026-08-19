@@ -18,11 +18,12 @@ extern int8_t string_push(string_t* arr, char* elem, size_t n)
 ## IDENTIFIER DESCRIPTION
 string_t        - The string container or type
 string_new      - Initializes the container
-string_insert   - Inserts an element into the string_t container at a specific index
+string_insert   - Inserts an element into the string_t container at a specific index. Returns -1 if it is out of bounds
 string_remove   - Removes an element from the container
 string_find     - Gets the index of an element from the container. Returns -1 if not found  
 string_pop      - Removes the last element
 string_push     - Pushes an element to the end of a container
+prints          - Prints the content of a buffer 
 
 
 

@@ -4,12 +4,19 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <errno.h>
 
-// A dynamic array that grows as elements are added.
+/// Prints the contents of a buffer up to a specific size
+extern void prints(char* arr, size_t size){
+	for (int i = 0; i < size; i++)	putchar(arr[i]);
+	putchar('\n');
+}
+
+/// A dynamic array that grows as elements are added.
 typedef struct {
-	char* content;   // The content of the container
-	size_t size;     // The size of the elements in the container	
-	size_t capacity; // The current maximum size of the container
+	char* content;   /// The content of the container
+	size_t size;     /// The size of the elements in the container	
+	size_t capacity; /// The current maximum size of the container
 } string_t; 
 
 extern string_t string_new (string_t* arr, size_t n){
@@ -20,7 +27,7 @@ extern string_t string_new (string_t* arr, size_t n){
 	return *arr;
 }
 
-extern int8_t string_push(string_t* arr, char* elem, size_t n){
+extern int8_t string_insert(string_t* arr, size_t index, char* elem, size_t n){
 	if (n == 0) return -1;
 
 	/// Doubles the capacity if the container would not contain it. If the doubled capacity is still not enough, then it sets it to the required capacity.
@@ -29,6 +36,8 @@ extern int8_t string_push(string_t* arr, char* elem, size_t n){
 	}
 
 	if(arr->size == 0){
+		if (index != 0) return -1;
+		
 		memcpy(arr->content, elem, n);
 	} else {
 		/// Reallocate memory for the arr->content and copy the memory
@@ -45,5 +54,7 @@ extern int8_t string_push(string_t* arr, char* elem, size_t n){
 	arr->size += n;
 	return 0;
 }
+
+extern int8_t string_push(string_t* arr, char* elem, size_t n)
 
 #endif
