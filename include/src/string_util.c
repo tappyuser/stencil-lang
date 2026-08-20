@@ -18,6 +18,18 @@ extern string_t string_new (string_t* arr, size_t n){
 	return *arr;
 }
 
+extern string_t* string_create(char* text, size_t n){
+	/// Creates a string_t from char *
+	/// It only supports null terminated strings
+	/// The length n must be specified for non null terminated strings, otherwise it must be 0.
+	n = n == 0 ? strlen(text) : n;
+	string_t* arr = (string_t*)malloc(sizeof(char) * n);
+	string_new(arr, n);
+	string_insert(arr, 0, text, n);
+	
+	return arr;
+}
+
 extern int8_t string_insert(string_t* arr, size_t index, char* elem, size_t n){
 	if (n == 0) {
 	       	return -1; 
@@ -52,7 +64,7 @@ extern int8_t string_push(string_t* arr, char* elem, size_t n){
 }
 
 static int8_t _remove_at(string_t* arr, size_t _index_s, size_t _index_e){
-	if (_index_e > arr->size) return -1;
+	if (_index_e > arr->size || _index_s >= _index_e) return -1;
 	char* temp = arr->content;
 	arr->content = (char*)malloc(sizeof(char) * arr->capacity);
 	memcpy(arr->content, temp, _index_s);
@@ -78,4 +90,14 @@ extern string_t* string_substring(string_t* arr, string_t* dst, size_t _index_s,
 	return dst;
 }
 
+/* String View Functions */
+extern string_view_t* string_view(char* arr, size_t _index_s, size_t _index_e){
+	if (_index_s >= _index_e) return nullptr;
+	string_view_t* _view = (string_view_t*)malloc(sizeof(string_view_t));
+	_view->size = _index_e - _index_s;
+	_view->begin = arr + _index_s;
+	_view->end = arr + _index_e;
+
+	return _view;
+}
 

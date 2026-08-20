@@ -14,6 +14,8 @@ typedef struct {
 
 extern void prints(char* arr, size_t size);
 extern string_t string_new (string_t* arr, size_t n);
+extern string_t* string_create(char* text, size_t n);
+extern string_view_t* string_view(char* arr, size_t _index_s, size_t _index_e);
 extern int8_t string_push(string_t* arr, char* elem, size_t n);
 extern int8_t string_remove_at(string_t* arr, size_t _index_s, size_t _index_e);
 extern int8_t string_insert(string_t* arr, size_t index, char* elem, size_t n);
@@ -23,6 +25,7 @@ extern string_t* string_substring(string_t* arr, string_t* dst, size_t _index_s,
 ## IDENTIFIER DESCRIPTION
 string_t            - The string container or type
 string_new          - Initializes the container
+string_create       - Creates a new string_t from a char* 
 string_insert       - Inserts an element into the string_t container at a specific index. Returns -1 if it is out of bounds
 string_remove_at    - Removes a range of characters from the container
 string_substring    - Creates a new string that is the substring of another string
@@ -85,4 +88,10 @@ string_remove_at(&arr, 2, arr.size);
 
 prints(arr.content, arr.size);
 printf("%zu\n", arr.size);
+```
+
+To use the `string_create` function
+```C
+string_t* arr = string_create("Hellow", 0);
+prints(arr->content, arr->size);
 ```
