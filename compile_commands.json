@@ -8,6 +8,22 @@
       "-Iinclude",
       "-c",
       "-o",
+      "obj/main.o",
+      "src/main.c"
+    ],
+    "directory": "/home/zephyr/dev/stencil",
+    "file": "/home/zephyr/dev/stencil/src/main.c",
+    "output": "/home/zephyr/dev/stencil/obj/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang",
+      "-g",
+      "-Wall",
+      "--std=c23",
+      "-Iinclude",
+      "-c",
+      "-o",
       "obj/string_util.o",
       "include/src/string_util.c"
     ],

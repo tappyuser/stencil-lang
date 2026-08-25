@@ -23,7 +23,7 @@ typedef struct __string_view_t string_view_t;
 extern void prints(char* arr, size_t size);
 extern string_t string_new (string_t* arr, size_t n);
 extern string_t* string_create(char* text, size_t n);
-extern string_view_t* string_view(char* arr, size_t _index_s, size_t _index_e);
+extern string_view_t* string_view(char* view_info, size_t _index_s, size_t _index_e);
 extern int8_t string_push(string_t* arr, char* elem, size_t n);
 extern int8_t string_remove_at(string_t* arr, size_t _index_s, size_t _index_e);
 extern int8_t string_insert(string_t* arr, size_t index, char* elem, size_t n);

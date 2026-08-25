@@ -91,7 +91,7 @@ extern string_t* string_substring(string_t* arr, string_t* dst, size_t _index_s,
 }
 
 /* String View Functions */
-extern string_view_t* string_view(char* arr, size_t _index_s, size_t _index_e){
+extern string_view_t* string_view(char* arr, size_t _index_s, size_t _index_e){ 
 	if (_index_s >= _index_e) return nullptr;
 	string_view_t* _view = (string_view_t*)malloc(sizeof(string_view_t));
 	_view->size = _index_e - _index_s;

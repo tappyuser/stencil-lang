@@ -6,11 +6,17 @@ string_util.h
 A header file that contains string_t type and functions.
 
 ## IDENTIFIER SYNOPSIS
-typedef struct {
-	char* content;   // The content of the container
-	size_t size;     // The size of the elements in the container	
-	size_t capacity; // The current maximum size of the container
-} string_t; 
+struct __string_t{
+	char* content;   /// The content of the container
+	size_t size;     /// The size of the elements in the container	
+	size_t capacity; /// The current maximum size of the container
+}; 
+
+struct __string_view_t{
+	size_t size;    /// The size of the elements in the container	
+	char* begin; 	/// Points to the part of the content which begins the string_view
+	char* end; 	/// Points to the part of the content which ends the string_view
+}; 
 
 extern void prints(char* arr, size_t size);
 extern string_t string_new (string_t* arr, size_t n);
@@ -94,4 +100,9 @@ To use the `string_create` function
 ```C
 string_t* arr = string_create("Hellow", 0);
 prints(arr->content, arr->size);
+```
+To use the `string_view` function
+```C
+string_view_t* view = string_view(contents->content, 7, 11);
+prints(view->begin, view->size);
 ```
