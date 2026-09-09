@@ -12,9 +12,9 @@ struct __string_t{
 }; 
 
 struct __string_view_t{
-	size_t size;     /// The size of the elements in the container	
+	size_t size;    /// The size of the elements in the container	
 	char* begin; 	/// Points to the part of the content which begins the string_view
-	char* end; 	/// Points to the part of the content which ends the string_view
+	char* end; 		/// Points to the part of the content which ends the string_view
 }; 
 
 typedef struct __string_t string_t;
