@@ -32,7 +32,6 @@ static string_view_t *get_token(const string_t *const text, size_t *_index) {
   /// Ignore whitespace
   while (isspace(contents[*index])) {
     (*index)++;
-    continue;
   }
 
   /// _start_index points to the start of a token
@@ -46,19 +45,23 @@ static string_view_t *get_token(const string_t *const text, size_t *_index) {
     token = string_view(contents, _start_index, *index + 1);
     prints(token->begin, token->size);
   } else {
-    while (contents[*index] == ';') {
-      /// Colon depicts a new line
-      (*index)++;
-      continue;
+    /// Handles semicolon
+    if (contents[*index] == ';') {
+      token = string_view(contents, _start_index, *index + 1);
+      prints(token->begin, token->size);
     }
-    if (contents[*index] == '*' || contents[*index] == '-' ||
-        contents[*index] == '+' || contents[*index] == '.') {
-      /// For reapeating non alphanumeric tokens like '**' '++' '--' '...'
+
+    /// For reapeating non alphanumeric tokens like '**' '++' '--' '...'
+    else if (contents[*index] == '*' || contents[*index] == '-' ||
+             contents[*index] == '+' || contents[*index] == '.') {
       while (contents[*index + 1] == contents[*index])
         (*index)++;
       token = string_view(contents, _start_index, *index + 1);
       prints(token->begin, token->size);
-    } else if (contents[*index] == '"') {
+    }
+
+    /// Parse the contents of a double quote
+    else if (contents[*index] == '"') {
       isQuote = true;
       while (isQuote) {
         (*index)++;
@@ -68,7 +71,10 @@ static string_view_t *get_token(const string_t *const text, size_t *_index) {
       }
       token = string_view(contents, _start_index, *index + 1);
       prints(token->begin, token->size);
-    } else if (contents[*index] == '\'') {
+    }
+
+    /// Parse the contents of a single quote
+    else if (contents[*index] == '\'') {
       isQuote = true;
       while (isQuote) {
         (*index)++;
@@ -78,11 +84,15 @@ static string_view_t *get_token(const string_t *const text, size_t *_index) {
       }
       token = string_view(contents, _start_index, *index + 1);
       prints(token->begin, token->size);
-    } else {
+    }
+
+    /// Everything else
+    else {
       token = string_view(contents, _start_index, *index + 1);
       prints(token->begin, token->size);
     }
   }
+
   (*index)++;
   return token;
 }

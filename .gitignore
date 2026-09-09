@@ -1,5 +1,5 @@
 *.swp
 *.swo
 src/main.cpp
-*.o
+obj/*.o
 
