@@ -1,4 +1,5 @@
-    abc = "sosmsdm ijdsfnsf ;";
-acc = 28;
+abc = "sosmsdm\" ijdsfnsf ;";
+    def = 'sosmsdm i\'jdsfnsf ;';
+acc = 28
 a = a.b;
-k = 1 * 1;
+k = 1 ** 1;

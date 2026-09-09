@@ -1,33 +1,38 @@
-CC=clang
-CPP=g++
+CC := clang
+CPP := g++
 
-DEBUG=gdb
+DEBUG := gdb
 
-SRCDIR=src
-OBJDIR=obj
-BINDIR=bin
-TESTDIR=test
-INCLUDEDIR=include
+SRCDIR := src
+OBJDIR := obj
+BINDIR := bin
+TESTDIR := test
+INCLUDEDIR := include
+LIBDIR := lib
 
-INCLUDE=-I$(INCLUDEDIR)
-# LIB=-Llib
-LIB=-Llib
+INCLUDE := -I$(INCLUDEDIR)
+LIB = -l$(patsubst lib%.a,%,$(LIBS))
 
-CFLAGS=-g -Wall --std=c23 $(INCLUDE) $(LIB)
-CPPFLAGS=-g -Wall --std=c++26 $(INCLUDE) $(LIB)
+DEPS := $(LIBDIR)
 
-MAIN=$(BINDIR)/main
+CFLAGS := -g -Wall --std=c23 $(INCLUDE) 
+CPPFLAGS := -g -Wall --std=c++26 $(INCLUDE)
 
-ARGS="examples/test.stl"
+MAIN := $(BINDIR)/main
+SRCS := $(notdir $(wildcard $(SRCDIR)/*.c))
+OBJS := $(patsubst %.c, $(OBJDIR)/%.o, $(SRCS))
+LIBS = $(notdir $(wildcard $(LIBDIR)/*.a))
 
-$(MAIN): $(OBJDIR)/main.o $(OBJDIR)/string_util.o
-	$(CC) $(CFLAGS) -o $@ $^
+ARGS := "examples/test.stl"
 
-$(OBJDIR)/main.o: $(SRCDIR)/main.c
-	$(CC) $(CFLAGS) -o $@ -c $^
+.PHONY: all
 
-$(OBJDIR)/string_util.o: $(INCLUDEDIR)/src/string_util.c
-	$(CC) $(CFLAGS) -o $@ -c $^
+all: $(MAIN)
+$(MAIN): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^ -L$(LIBDIR) $(LIB)
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.c
+	$(CC) $(CFLAGS) -c $^ -o $@
 
 run: $(MAIN)
 	./$^ $(ARGS)
