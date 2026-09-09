@@ -1,5 +1,6 @@
 *.swp
 *.swo
-src/main.cpp
-obj/*.o
+./src/main.cpp
+./bin/*
+./obj/*.o
 
