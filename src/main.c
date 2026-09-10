@@ -1,9 +1,8 @@
-#include <ctype.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
+#include "lexer.h"
 #include "string_util.h"
 
 static string_t *read_file(string_t *sourcefile) {
@@ -22,98 +21,6 @@ static string_t *read_file(string_t *sourcefile) {
   return string_create(_buffer, 0);
 }
 
-/// TODO: Put the get_token and pasrse functions in the stencil_parser project
-/// and create a library for it
-static string_view_t *get_token(const string_t *const text,
-                                size_t *const _index) {
-  bool isQuote = false; /// For parsing inside of a string
-  char *contents = text->content;
-  string_view_t *token; /// Contains the token
-
-  /// index passes through the text and checks if  each character meets a
-  /// specific condition eg if `abc = 5;` abc, = and 5 are all tokens. While
-  /// parsing _start_index would point to 'a', index would keep incrementing
-  /// until it sees a space then it would stop to get the token 'abc'.
-  size_t *index = _index;
-
-  /// Ignore whitespace
-  while (isspace(contents[*index])) {
-    (*index)++;
-  }
-
-  /// _start_index points to the start of a token
-  size_t _start_index = *_index;
-
-  /// Get an identifier or numeral literal
-  if (isalnum(contents[*index])) {
-    while (isalnum(contents[*index + 1]))
-      (*index)++;
-
-    token = string_view(contents, _start_index, *index + 1);
-    prints(token->begin, token->size);
-  }
-
-  else {
-    /// Handles semicolon
-    if (contents[*index] == ';') {
-      token = string_view(contents, _start_index, *index + 1);
-      prints(token->begin, token->size);
-    }
-
-    /// For reapeating non alphanumeric tokens like '**' '++' '--' '...' '//'
-    else if (contents[*index] == '*' || contents[*index] == '-' ||
-             contents[*index] == '+' || contents[*index] == '.' ||
-             contents[*index] == '/') {
-      while (contents[*index + 1] == contents[*index])
-        (*index)++;
-      token = string_view(contents, _start_index, *index + 1);
-      prints(token->begin, token->size);
-    }
-
-    /// Parse the contents of a double quote
-    else if (contents[*index] == '"') {
-      isQuote = true;
-      while (isQuote) {
-        (*index)++;
-        if (contents[*index] == '"' && contents[*index - 1] != '\\') {
-          isQuote = false;
-        }
-      }
-      token = string_view(contents, _start_index, *index + 1);
-      prints(token->begin, token->size);
-    }
-
-    /// Parse the contents of a single quote
-    else if (contents[*index] == '\'') {
-      isQuote = true;
-      while (isQuote) {
-        (*index)++;
-        if (contents[*index] == '\'' && contents[*index - 1] != '\\') {
-          isQuote = false;
-        }
-      }
-      token = string_view(contents, _start_index, *index + 1);
-      prints(token->begin, token->size);
-    }
-
-    /// Everything else
-    else {
-      token = string_view(contents, _start_index, *index + 1);
-      prints(token->begin, token->size);
-    }
-  }
-
-  (*index)++;
-  return token;
-}
-
-static string_t parse(const string_t *const filecontents) {
-  size_t index = 0;
-  while (index < filecontents->size) {
-    get_token(filecontents, &index);
-  }
-}
-
 int main(int argc, char **argv) {
   // TODO: Add a help message when run without arguments or with the "--help"
   if (argc == 1) {
@@ -129,7 +36,7 @@ int main(int argc, char **argv) {
 
   printf("%s\n\n------------------\n", filecontents->content);
 
-  parse(filecontents);
+  lex_parser(filecontents);
 
   return EXIT_SUCCESS;
 }

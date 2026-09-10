@@ -1,11 +1,12 @@
 
 ## NAME
-string_util.h
+`string_util.h`
 
 ## DESCRIPTION
 A header file that contains string_t type and functions.
 
 ## IDENTIFIER SYNOPSIS
+```C 
 struct __string_t{
 	char* content;   /// The content of the container
 	size_t size;     /// The size of the elements in the container	
@@ -26,19 +27,20 @@ extern int8_t string_push(string_t* arr, char* elem, size_t n);
 extern int8_t string_remove_at(string_t* arr, size_t _index_s, size_t _index_e);
 extern int8_t string_insert(string_t* arr, size_t index, char* elem, size_t n);
 extern string_t* string_substring(string_t* arr, string_t* dst, size_t _index_s, size_t _index_e);
+```
 
 
 ## IDENTIFIER DESCRIPTION
-string_t            - The string container or type
-string_new          - Initializes the container
-string_create       - Creates a new string_t from a char* 
-string_insert       - Inserts an element into the string_t container at a specific index. Returns -1 if it is out of bounds
-string_remove_at    - Removes a range of characters from the container
-string_substring    - Creates a new string that is the substring of another string
-string_find         - Gets the index of the first occurence of a character from the container. Returns -1 if not found  
-string_pop          - Removes the last element - **NOT IMPLEMENTED AND MAY NOT BE**
-string_push         - Pushes an element to the end of a container
-prints              - Prints the content of a buffer 
+`string_t`            - The string container or type
+`string_new`          - Initializes the container
+`string_create`       - Creates a new string_t from a char* 
+`string_insert`       - Inserts an element into the string_t container at a specific index. Returns -1 if it is out of bounds
+`string_remove_at`    - Removes a range of characters from the container
+`string_substring`    - Creates a new string that is the substring of another string
+`string_find`         - Gets the index of the first occurence of a character from the container. Returns -1 if not found  
+`string_pop`          - Removes the last element - **NOT IMPLEMENTED AND MAY NOT BE**
+`string_push`         - Pushes an element to the end of a container
+`prints`              - Prints the content of a buffer 
 
 
 
