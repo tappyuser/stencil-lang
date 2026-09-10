@@ -119,12 +119,16 @@ extern string_t lex_parser(const string_t *const source) {
   token_t *t_list = nullptr;
   while (index < source->size) {
     string_view_t *token = get_token(source, &index);
+    // TODO: Identify each of the tokens and add the correct token_id
     if (t_list == nullptr) {
       t_list = token_insert(t_list, (void *)token, IDENTIFIER);
     } else {
       t_list = token_insert(t_list, (void *)token, NUMERICLITERAL);
     }
   }
+
+  // TODO: Properly test the t_list variable if it contains the proper tokens ie
+  // print the string_view_t * token contents
   token_t *p = t_list;
   while (p) {
     printf("%x\n", p /* ->token_id */);
