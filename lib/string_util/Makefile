@@ -11,7 +11,7 @@ OBJS := $(patsubst %.c,$(OBJDIR)/%.o,$(SRCS))
 
 INCLUDE := -I$(INCLUDEDIR)
 
-LIB := $(LIBDIR)/libstnlparser.a
+LIB := libstringutil.a
 
 .PHONY: all
 all: $(LIB)

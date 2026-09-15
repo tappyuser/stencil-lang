@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
 
   printf("%s\n\n------------------\n", filecontents->content);
 
-  lex_parser(filecontents);
+  lex_parse(filecontents);
 
   return EXIT_SUCCESS;
 }

@@ -1,24 +1,16 @@
 #include <ctype.h>
+#include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "lexer.h"
 #include "string_util.h"
 
-// extern token_t *token_init(void *value, enum token_type token_id) {
-//   /// Creates a signly linked list
-//   token_t *token = (token_t *)malloc(sizeof(token_t));
-//   token->value = value;
-//   token->next = nullptr;
-//   token->token_id = token_id;
-//
-//   return token;
-// }
-
-extern token_t *token_insert(token_t *token_head, token_t *token,
+extern token_t *token_insert(token_t *token_head, void *token,
                              enum token_type token_id) {
   token_t *temp = (token_t *)malloc(sizeof(token_t));
-  temp->value = (void *)token;
+  temp->value = token;
   temp->next = nullptr;
   temp->token_id = token_id;
 
@@ -114,24 +106,152 @@ extern string_view_t *get_token(const string_t *const text,
   return token;
 }
 
-extern string_t lex_parser(const string_t *const source) {
+extern token_t *lex_parse(const string_t *const source) {
+  /// Gets each token from the soruce code and assigns the correct token_type
   size_t index = 0;
   token_t *t_list = nullptr;
+  enum token_type token_id;
   while (index < source->size) {
     string_view_t *token = get_token(source, &index);
-    // TODO: Identify each of the tokens and add the correct token_id
-    if (t_list == nullptr) {
-      t_list = token_insert(t_list, (void *)token, IDENTIFIER);
-    } else {
-      t_list = token_insert(t_list, (void *)token, NUMERICLITERAL);
-    }
-  }
+    switch (*(token->begin)) {
+    case '*':
+      if (memcmp(token->begin, "**", token->size)) {
+        token_id = OPPOW;
+      } else {
+        token_id = OPMUL;
+      }
+      break;
 
-  // TODO: Properly test the t_list variable if it contains the proper tokens ie
-  // print the string_view_t * token contents
-  token_t *p = t_list;
+    case '/':
+      if (memcmp(token->begin, "//", token->size)) {
+        token_id = S_COMMENT;
+      } else {
+        token_id = OPDIV;
+      }
+      break;
+
+    case '+':
+      if (memcmp(token->begin, "++", token->size)) {
+        token_id = INCREMENT;
+      } else {
+        token_id = OPADD;
+      }
+      break;
+
+    case '-':
+      if (memcmp(token->begin, "--", token->size)) {
+        token_id = DECREMENT;
+      } else {
+        token_id = OPSUB;
+      }
+      break;
+
+    case '=':
+      if (memcmp(token->begin, "==", token->size)) {
+        token_id = OPEQS;
+      } else {
+        token_id = OPEQU;
+      }
+      break;
+
+    case '.':
+      if (memcmp(token->begin, "...", token->size)) {
+        token_id = VARADIC;
+      } else {
+        token_id = OPDOT;
+      }
+      break;
+
+    /// Quote
+    case '\'':
+      token_id = S_QUOTE;
+      break;
+
+    case '"':
+      token_id = D_QUOTE;
+      break;
+
+    // Brackets
+    case '(':
+      token_id = O_PARENTHESIS;
+      break;
+
+    case ')':
+      token_id = C_PARENTHESIS;
+      break;
+
+    case '{':
+      token_id = O_CURLEYBRACKET;
+      break;
+
+    case '}':
+      token_id = C_CURLEYBRACKET;
+      break;
+
+    case '[':
+      token_id = O_SQAUREBRACKET;
+      break;
+
+    case ']':
+      token_id = C_SQUAREBRACKET;
+      break;
+
+    case ';':
+      token_id = SEMICOLON;
+      break;
+
+    case ',':
+      token_id = COMMA;
+      break;
+
+    case '\n':
+      token_id = NEWLINE;
+      break;
+
+      /// Handles numbers, keywords and identifiers ie function names, variable
+      /// names
+    default:
+      /// The rest that needs to be handled is are the alphanumerics like
+      /// identifiers and keywords and the invalid tokens
+      char _err_token[1024];
+      memcpy(_err_token, token->begin, token->size);
+      _err_token[token->size] = '\0';
+      if (isalnum(*(token->begin))) {
+        bool isDigit = false;
+        for (size_t i = 0; i < token->size; ++i) {
+          if (isdigit(*(token->begin))) {
+            if (isalpha(*(token->begin + i))) {
+              fprintf(stderr, "Invalid token %s\n", _err_token);
+              return nullptr;
+            }
+            isDigit = true;
+          }
+        }
+        if (isDigit) {
+          token_id = NUMERICLITERAL;
+        } else {
+          token_id = IDENTIFIER;
+        }
+      }
+
+      /// For the invalid tokens or tokens that haven't been handlded this just
+      /// prints it out for debugging
+      else {
+        fprintf(stderr, "Unhandled or Invalid token %s\n", _err_token);
+      }
+      break;
+    }
+    t_list = token_insert(t_list, (void *)token, token_id);
+  }
+  // TODO: Identify each of the tokens and add the correct token_id
+  auto p = t_list;
   while (p) {
-    printf("%x\n", p /* ->token_id */);
+    auto tok = (string_view_t *)(p->value);
+    printf("---------------------------------\n");
+    prints(tok->begin, tok->size);
+    printf("%d\n\n", p->token_id);
     p = p->next;
   }
+
+  return t_list;
 }

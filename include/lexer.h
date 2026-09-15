@@ -14,8 +14,10 @@ enum token_type {
   IDENTIFIER,
   KEYWORD,
 
+  OPEQU, // =
+
   // Comparison Operators
-  OPEQ,  // =
+  OPEQS, // ==
   OPNEQ, // !=
   OPLT,  // <
   OPGT,  // >
@@ -31,19 +33,31 @@ enum token_type {
   C_CURLEYBRACKET, // }
 
   // Arithmetic Operators
-  OPMUL, // *
-  OPDIV, // /
-  OPSUB, // -
-  OPADD, // +
-  OPMOD, // %
-  OPPOW, // **
+  OPMUL,     // *
+  OPDIV,     // /
+  OPSUB,     // -
+  OPADD,     // +
+  OPMOD,     // %
+  OPPOW,     // **
+  INCREMENT, // ++
+  DECREMENT, // --
 
   // Arithmetic Operators
   OPAND, // &&
   OPOR,  // ||
+
   // Symbols
-  POINTER,  // *
-  ADDRESSOF // &
+  POINTER,   // *
+  ADDRESSOF, // &
+  S_COMMENT, // // Single line Comment
+  M_COMMENT, // /**/ Multi line Comment
+  S_QUOTE,   // '
+  D_QUOTE,   // "
+  SEMICOLON, // ;
+  OPDOT,     // .
+  VARADIC,   // ...
+  COMMA,     // ,
+  NEWLINE,   // \n
 };
 
 typedef struct _token_t {
@@ -53,11 +67,11 @@ typedef struct _token_t {
 } token_t;
 
 extern token_t *token_init(void *value, enum token_type token_id);
-extern token_t *token_insert(token_t *token_head, token_t *token,
+extern token_t *token_insert(token_t *token_head, void *token,
                              enum token_type token_id);
 extern string_view_t *
 get_token(const string_t *const text, /// The source code
           size_t *const _index);      /// The index to start from
-extern string_t lex_parser(const string_t *const source);
+extern token_t *lex_parse(const string_t *const source);
 
 #endif /* ifndef _STNL_LEXER__ */
