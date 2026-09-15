@@ -40,7 +40,7 @@ extern string_view_t *get_token(const string_t *const text,
   /// until it sees a space then it would stop to get the token 'abc'.
   size_t *index = _index;
 
-  /// Ignore whitespace
+  /// Ignore space character
   while (contents[*index] == ' ') {
     (*index)++;
   }
@@ -49,8 +49,8 @@ extern string_view_t *get_token(const string_t *const text,
   size_t _start_index = *_index;
 
   /// Get an identifier or numeral literal
-  if (isalnum(contents[*index])) {
-    while (isalnum(contents[*index + 1]))
+  if (isalnum(contents[*index]) || contents[*index] == '_') {
+    while (isalnum(contents[*index + 1]) || contents[*index + 1] == '_')
       (*index)++;
 
     token = string_view(contents, _start_index, *index + 1);
@@ -108,14 +108,19 @@ extern string_view_t *get_token(const string_t *const text,
 
 extern token_t *lex_parse(const string_t *const source) {
   /// Gets each token from the soruce code and assigns the correct token_type
+
+  /// passed to the get_token function
   size_t index = 0;
-  token_t *t_list = nullptr;
-  enum token_type token_id;
+  token_t *t_list = nullptr; /// linked list that contains tokens
+  enum token_type
+      token_id; /// The enum token_type is defined in the lexer.h header file
+
   while (index < source->size) {
     string_view_t *token = get_token(source, &index);
     switch (*(token->begin)) {
     case '*':
       if (memcmp(token->begin, "**", token->size)) {
+        /// for the raise to power operator
         token_id = OPPOW;
       } else {
         token_id = OPMUL;
@@ -213,14 +218,26 @@ extern token_t *lex_parse(const string_t *const source) {
     default:
       /// The rest that needs to be handled is are the alphanumerics like
       /// identifiers and keywords and the invalid tokens
+
+      /// Each character in the current token would be iterated through to check
+      /// that it is a valid token. A valid alphanumeric token is one that
+      /// contains alphabetic characters and(or) an underscore. It must not
+      /// start with a number for an identifiers or keywords but can contain a
+      /// number after an alphabetic character or an underscore.
       char _err_token[1024];
+      /// 1024 characters is the maximum length for a variable
+
+      /// Since the token is of type string_view_t *, it cannot be printed to
+      /// stderr by fprintf since it only accepts null terminated strings.
+      /// Hence, _err_token would contain the invalid token to be printed out.
       memcpy(_err_token, token->begin, token->size);
       _err_token[token->size] = '\0';
-      if (isalnum(*(token->begin))) {
+
+      if (isalnum(*(token->begin)) || *(token->begin) == '_') {
         bool isDigit = false;
         for (size_t i = 0; i < token->size; ++i) {
           if (isdigit(*(token->begin))) {
-            if (isalpha(*(token->begin + i))) {
+            if (isalpha(*(token->begin + i)) || *(token->begin + i) == '_') {
               fprintf(stderr, "Invalid token %s\n", _err_token);
               return nullptr;
             }
@@ -234,7 +251,7 @@ extern token_t *lex_parse(const string_t *const source) {
         }
       }
 
-      /// For the invalid tokens or tokens that haven't been handlded this just
+      /// For the invalid tokens or tokens that haven't been handlded, this just
       /// prints it out for debugging
       else {
         fprintf(stderr, "Unhandled or Invalid token %s\n", _err_token);
@@ -243,11 +260,11 @@ extern token_t *lex_parse(const string_t *const source) {
     }
     t_list = token_insert(t_list, (void *)token, token_id);
   }
-  // TODO: Identify each of the tokens and add the correct token_id
+  /// Prints out the token value and the token id
   auto p = t_list;
   while (p) {
     auto tok = (string_view_t *)(p->value);
-    printf("---------------------------------\n");
+    // printf("---------------------------------\n");
     prints(tok->begin, tok->size);
     printf("%d\n\n", p->token_id);
     p = p->next;

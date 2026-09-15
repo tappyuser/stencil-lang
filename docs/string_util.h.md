@@ -20,6 +20,7 @@ struct __string_view_t{
 }; 
 
 extern void prints(char* arr, size_t size);
+extern void printsn(char* arr, size_t size);
 extern string_t string_new (string_t* arr, size_t n);
 extern string_t* string_create(char* text, size_t n);
 extern string_view_t* string_view(char* arr, size_t _index_s, size_t _index_e);
@@ -40,7 +41,8 @@ extern string_t* string_substring(string_t* arr, string_t* dst, size_t _index_s,
 `string_find`         - Gets the index of the first occurence of a character from the container. Returns -1 if not found  
 `string_pop`          - Removes the last element - **NOT IMPLEMENTED AND MAY NOT BE**
 `string_push`         - Pushes an element to the end of a container
-`prints`              - Prints the content of a buffer 
+`printsn`              - Prints the content of a buffer with a newline 
+`prints`              - Prints the content of a buffer without adding a newline
 
 
 

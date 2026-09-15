@@ -23,6 +23,8 @@ static string_t *read_file(string_t *sourcefile) {
 
 int main(int argc, char **argv) {
   // TODO: Add a help message when run without arguments or with the "--help"
+  // TODO: Add the ability to parse code on the command line without writing it
+  // in a file
   if (argc == 1) {
     fprintf(stderr, "No text file to parse\n");
     return EXIT_FAILURE;

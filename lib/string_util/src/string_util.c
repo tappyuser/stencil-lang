@@ -12,7 +12,11 @@ extern void prints(char *arr, size_t size) {
     } else {
       putchar(arr[i]);
     }
+}
 
+/// Does the same as prints but adds a newline
+extern void printsn(char *arr, size_t size) {
+  prints(arr, size);
   putchar('\n');
 }
 

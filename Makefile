@@ -1,4 +1,4 @@
-CC := clang
+CC := gcc
 CPP := g++
 
 DEBUG := gdb
@@ -39,6 +39,9 @@ run: $(MAIN)
 
 debug: $(MAIN)
 	$(DEBUG) --args ./$^ $(ARGS)
+
+lib:
+	$(MAKE) -C $@
 
 clean:
 	rm -rf obj/* bin/*
