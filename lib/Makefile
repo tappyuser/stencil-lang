@@ -1,5 +1,5 @@
 # Creates libraries in each directory and places it in this current directory
-include Makefile.in
+include ../Makefile.in
 CC := clang
 CFLAGS := -Wall -g
 
@@ -21,4 +21,4 @@ $(DIRS): $(LIBS)
 	cp $(LIBS) ./
 
 clean:
-	rm -f $(LIBS)
+	rm -f $(notdir $(LIBS))
