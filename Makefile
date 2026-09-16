@@ -1,47 +1,64 @@
-CC := gcc
-CPP := g++
+CC := clang
 
-DEBUG := gdb
+# Include for platform detection
+include Makefile.in
 
-SRCDIR := src
-OBJDIR := obj
-BINDIR := bin
-TESTDIR := test
-INCLUDEDIR := include
-LIBDIR := lib
+ifeq ($(DETECTED_OS),Windows)
+DEBUGGER := 
+else 
+DEBUGGER := gdb
+endif
 
-INCLUDE := -I$(INCLUDEDIR)
-LIB = -l$(patsubst lib%.a,%,$(LIBS))
+DEBUG := 1 # Set to 0 for release build and 1 for debug build
+
+override SRCDIR := src
+override OBJDIR := obj
+override BINDIR := bin
+override TESTDIR := test
+override INCLUDEDIR := include
+override LIBDIR := lib
+
+override INCLUDE := -I$(INCLUDEDIR)
+override LIB = -l$(patsubst lib%.a,%,$(LIBS))
 
 DEPS := $(LIBDIR)
 
-CFLAGS := -g -Wall --std=c23 $(INCLUDE) 
-CPPFLAGS := -g -Wall --std=c++26 $(INCLUDE)
+CFLAGS := -Wall --std=c23 $(INCLUDE) 
 
-MAIN := $(BINDIR)/main
+TARGET := $(BINDIR)/main
 SRCS := $(notdir $(wildcard $(SRCDIR)/*.c))
 OBJS := $(patsubst %.c, $(OBJDIR)/%.o, $(SRCS))
 LIBS = $(notdir $(wildcard $(LIBDIR)/*.a))
 
+# Command line arguments to pass to the TARGET
 ARGS := "examples/test.stl"
 
-.PHONY: all
+.PHONY: all build debug
 
-all: $(MAIN)
-$(MAIN): $(OBJS)
+# Checking to enable the debug build
+ifeq ($(strip $(DEBUG)),1) 
+CFLAGS := -g -O0 $(CFLAGS)
+else  
+CFLAGS := -O3 $(CFLAGS)
+endif
+
+all: build
+
+build: $(TARGET)
+
+clean:
+	rm -rf obj/* bin/*
+
+$(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^ -L$(LIBDIR) $(LIB)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	$(CC) $(CFLAGS) -c $^ -o $@
 
-run: $(MAIN)
+run: $(TARGET)
 	./$^ $(ARGS)
 
-debug: $(MAIN)
-	$(DEBUG) --args ./$^ $(ARGS)
+debug: $(TARGET)
+	$(DEBUGGER) --args ./$^ $(ARGS)
 
-lib:
-	$(MAKE) -C $@
 
-clean:
-	rm -rf obj/* bin/*

@@ -1,0 +1,16 @@
+# Platform detection
+DETECTED_OS := Unknown
+ifeq ($(OS),Windows_NT)
+DETECTED_OS := Windows
+endif
+
+UNAME_S = $(shell uname -s)
+ifeq (UNAME_S,Linux)
+DETECTED_OS := Linux
+endif
+ifeq (UNAME_S,Darwin)
+DETECTED_OS := macOS
+endif 
+
+
+

@@ -10,14 +10,16 @@ DIRS := string_util
 all: $(DIRS)
 
 ifeq ($(DETECTED_OS),Windows)
-override LIBS := $(foreach dir,$(DIRS),$(shell where /r $(dir) *.lib 2> nul))
+override LIBS := $(shell where /r *.lib 2> nul)
 endif 
 ifneq ($(DETECTED_OS),Unknown)
-override LIBS := $(foreach dir,$(DIRS),$(shell find $(dir) -name *.a 2> /dev/null))
+override LIBS := $(shell find . -name *.a 2> /dev/null)
+k = 2
 endif
 
 $(DIRS): $(LIBS)
 	$(MAKE) -C $@
+	@echo $(DETECTED_OS)
 	cp $(LIBS) ./
 
 clean:
