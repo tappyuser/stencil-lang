@@ -7,6 +7,166 @@
 #include "lexer.h"
 #include "string_util.h"
 
+extern string_t *get_token_id_name(enum token_type token_id) {
+
+  string_t *id = nullptr;
+  switch (token_id) {
+  case NUMERICLITERAL:
+    id = string_create("NUMERICLITERAL", 0);
+    break;
+
+  case CHARACTERLITERAL:
+    id = string_create("CHARACTERLITERAL", 0);
+    break;
+
+  case IDENTIFIER:
+    id = string_create("IDENTIFIER", 0);
+    break;
+
+  case KEYWORD:
+    id = string_create("KEYWORD", 0);
+    break;
+
+  case OPEQU:
+    id = string_create("OPEQU", 0);
+    break;
+
+  case OPEQS:
+    id = string_create("OPEQS", 0);
+    break;
+
+  case OPNEQ:
+    id = string_create("OPNEQ", 0);
+    break;
+
+  case OPLT:
+    id = string_create("OPLT", 0);
+    break;
+
+  case OPGT:
+    id = string_create("OPGT", 0);
+    break;
+
+  case OPLE:
+    id = string_create("OPLE", 0);
+    break;
+
+  case OPGE:
+    id = string_create("OPGE", 0);
+    break;
+
+  case O_PARENTHESIS:
+    id = string_create("O_PARENTHESIS", 0);
+    break;
+
+  case C_PARENTHESIS:
+    id = string_create("C_PARENTHESIS", 0);
+    break;
+
+  case O_SQAUREBRACKET:
+    id = string_create("O_SQAUREBRACKET", 0);
+    break;
+
+  case C_SQUAREBRACKET:
+    id = string_create("C_SQUAREBRACKET", 0);
+    break;
+
+  case O_CURLEYBRACKET:
+    id = string_create("O_CURLEYBRACKET", 0);
+    break;
+
+  case C_CURLEYBRACKET:
+    id = string_create("C_CURLEYBRACKET", 0);
+    break;
+
+  case OPMUL:
+    id = string_create("OPMUL", 0);
+    break;
+
+  case OPDIV:
+    id = string_create("OPDIV", 0);
+    break;
+
+  case OPSUB:
+    id = string_create("OPSUB", 0);
+    break;
+
+  case OPADD:
+    id = string_create("OPADD", 0);
+    break;
+
+  case OPMOD:
+    id = string_create("OPMOD", 0);
+    break;
+
+  case OPPOW:
+    id = string_create("OPPOW", 0);
+    break;
+
+  case INCREMENT:
+    id = string_create("INCREMENT", 0);
+    break;
+
+  case DECREMENT:
+    id = string_create("DECREMENT", 0);
+    break;
+
+  case OPAND:
+    id = string_create("OPAND", 0);
+    break;
+
+  case OPOR:
+    id = string_create("OPOR", 0);
+    break;
+
+  case POINTER:
+    id = string_create("POINTER", 0);
+    break;
+
+  case ADDRESSOF:
+    id = string_create("ADDRESSOF", 0);
+    break;
+
+  case S_COMMENT:
+    id = string_create("S_COMMENT", 0);
+    break;
+
+  case M_COMMENT:
+    id = string_create("M_COMMENT", 0);
+    break;
+
+  case S_QUOTE:
+    id = string_create("S_QUOTE", 0);
+    break;
+
+  case D_QUOTE:
+    id = string_create("D_QUOTE", 0);
+    break;
+
+  case SEMICOLON:
+    id = string_create("SEMICOLON", 0);
+    break;
+
+  case OPDOT:
+    id = string_create("OPDOT", 0);
+    break;
+
+  case VARADIC:
+    id = string_create("VARADIC", 0);
+    break;
+
+  case COMMA:
+    id = string_create("COMMA", 0);
+    break;
+
+  case NEWLINE:
+    id = string_create("NEWLINE", 0);
+    break;
+  }
+
+  return id;
+}
+
 extern token_t *token_insert(token_t *token_head, void *token,
                              enum token_type token_id) {
   token_t *temp = (token_t *)malloc(sizeof(token_t));
@@ -266,7 +426,7 @@ extern token_t *lex_parse(const string_t *const source) {
     auto tok = (string_view_t *)(p->value);
     // printf("---------------------------------\n");
     prints(tok->begin, tok->size);
-    printf("%d\n\n", p->token_id);
+    printf(" %s\n\n", get_token_id_name(p->token_id)->content);
     p = p->next;
   }
 

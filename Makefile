@@ -37,7 +37,7 @@ ARGS := "examples/test.stl"
 
 # Checking to enable the debug build
 ifeq ($(strip $(DEBUG)),1) 
-CFLAGS := -g -O0 $(CFLAGS)
+CFLAGS := -g -O0 -D_STNL_DEBUG_ $(CFLAGS)
 else  
 CFLAGS := -O3 $(CFLAGS)
 endif
