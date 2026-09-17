@@ -130,12 +130,7 @@ extern string_t *string_substring(string_t *arr, string_t *dst, size_t _index_s,
                     "the string_t * arr");
     return nullptr;
   }
-  if (memcpy(dst->content, arr->content + _index_s, _index_e - _index_s) ==
-      nullptr) {
-    fprintf(stderr, "Error copying arr at %zu till %zu to dst", _index_s,
-            _index_e);
-    return nullptr;
-  }
+  memcpy(dst->content, arr->content + _index_s, _index_e - _index_s);
   dst->size = _index_e - _index_s + 1;
   return dst;
 }

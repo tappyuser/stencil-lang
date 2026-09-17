@@ -52,8 +52,8 @@ extern string_t* string_view_to_string(string_view_t * view);
 ## EXAMPLES
 To initialize a new container, use the `string_new` function
 ```C
-string_t arr;
-string_new(&arr, 0);
+string_t* arr = string_new(0);
+string_push(arr, "Hello World");
 
 printf(arr.content);
 printf("%d\n", arr.size);
