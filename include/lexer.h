@@ -69,10 +69,17 @@ typedef struct _token_t {
 extern token_t *token_init(void *value, enum token_type token_id);
 extern token_t *token_insert(token_t *token_head, void *token,
                              enum token_type token_id);
+
 extern string_view_t *
 get_token(const string_t *const text, /// The source code
           size_t *const _index);      /// The index to start from
+
 extern string_t *get_token_id_name(enum token_type token_id);
+
+extern string_t *
+_format_token_list(token_t *token_list); /// Formats the list of tokens, adding
+                                         /// the token_type and the token value
+
 extern token_t *lex_parse(const string_t *const source);
 
 #endif /* ifndef _STNL_LEXER__ */

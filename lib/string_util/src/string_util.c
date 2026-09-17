@@ -1,4 +1,5 @@
 #include "string_util.h"
+#include <errno.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,36 +13,47 @@ extern void prints(char *arr, size_t size) {
     } else {
       putchar(arr[i]);
     }
+  errno = 0;
 }
 
 /// Does the same as prints but adds a newline
 extern void printsn(char *arr, size_t size) {
   prints(arr, size);
   putchar('\n');
+  errno = 0;
 }
 
-extern string_t string_new(string_t *arr, size_t n) {
-  arr->size = 0;
-  arr->capacity = n;
-  arr->content = (char *)malloc(sizeof(char) * n);
+extern string_t *string_new(size_t n) {
+  /// Initialises the string_t * arr with the capacity of n
+  /// If arr is a nullptr, then it create the string_t *
+  /// Returns the new arr
 
-  return *arr;
+  string_t *tmp_arr = (string_t *)malloc(sizeof(string_t));
+  tmp_arr->size = 0;
+  tmp_arr->capacity = n;
+  tmp_arr->content = (char *)malloc(sizeof(char) * n);
+
+  return tmp_arr;
 }
 
 extern string_t *string_create(char *text, size_t n) {
   /// Creates a string_t from char *
-  /// It only supports null terminated strings
-  /// The length n must be specified for non null terminated strings, otherwise
-  /// it must be 0.
+  /// If the n is zero for null terminated string, then it uses the strlen
+  /// function to determine the length. The length n must be specified for non
+  /// null terminated strings.
   n = n == 0 ? strlen(text) : n;
-  string_t *arr = (string_t *)malloc(sizeof(char) * n);
-  string_new(arr, n);
-  string_insert(arr, 0, text, n);
+  string_t *arr = string_new(n); /// Initialize the string_t * arr
+  if (string_insert(arr, 0, text, n) == 0) {
+    errno = 0;
+  }
 
   return arr;
 }
 
 extern int8_t string_insert(string_t *arr, size_t index, char *elem, size_t n) {
+  /// Inserts n bytes of char * elem into the string * arr at index.
+  /// index must be zero when the arr is empty, that is arr->size is zero.
+  /// Returns -1 if there is an IndexOutOfRange error.
   if (n == 0) {
     return -1;
   }
@@ -55,15 +67,17 @@ extern int8_t string_insert(string_t *arr, size_t index, char *elem, size_t n) {
         arr->capacity * 2 < arr->size + n ? arr->size + n : arr->capacity * 2;
   }
 
+  arr->content = (char *)malloc(sizeof(char) * arr->capacity);
   if (arr->size == 0) {
-    if (index != 0)
+    if (index != 0) { /// index must be zero when the array is empty
+      fprintf(stderr,
+              "IndexOutOfRange: index must be zero for an empty array\n");
       return -1;
+    }
     memcpy(arr->content, elem, n);
   } else {
     /// Reallocate memory for the arr->content and copy the memory
     char *temp = arr->content;
-    arr->content = (char *)malloc(sizeof(char) * arr->capacity);
-
     /// Copy the element into the arr->content buffer
     memcpy(arr->content, temp,
            index); /// Copies the begining of the string until the index
@@ -78,6 +92,7 @@ extern int8_t string_insert(string_t *arr, size_t index, char *elem, size_t n) {
 }
 
 extern int8_t string_push(string_t *arr, char *elem, size_t n) {
+  /// Inserts an char * elem at the end of the string_t * arr
   return string_insert(arr, arr->size, elem, n);
 }
 
@@ -103,9 +118,22 @@ extern int8_t string_remove_at(string_t *arr, size_t _index_s,
 
 extern string_t *string_substring(string_t *arr, string_t *dst, size_t _index_s,
                                   size_t _index_e) {
-  if (_index_e > arr->size)
+  /// Copies a range of characters starting from a start index till the end
+  /// index, from the string_t * arr to the string_t * dst
+  ///
+  /// Returns the string_t * dst if successful, else returns nullptr
+  ///
+  /// _index_s is the start index and is inclusive
+  /// _index_e is the end index and is exclusive
+  if (_index_e > arr->size) {
+    fprintf(stderr, "IndexOutOfRange: the end index is larger than the size of "
+                    "the string_t * arr");
     return nullptr;
-  if (memcpy(dst->content, arr->content + _index_s, _index_e) == nullptr) {
+  }
+  if (memcpy(dst->content, arr->content + _index_s, _index_e - _index_s) ==
+      nullptr) {
+    fprintf(stderr, "Error copying arr at %zu till %zu to dst", _index_s,
+            _index_e);
     return nullptr;
   }
   dst->size = _index_e - _index_s + 1;
@@ -122,4 +150,10 @@ extern string_view_t *string_view(char *arr, size_t _index_s, size_t _index_e) {
   _view->end = arr + _index_e;
 
   return _view;
+}
+
+extern string_t *string_view_to_string(string_view_t *view) {
+  string_t *container = string_new(view->size);
+  strncpy(container->content, view->begin, view->size);
+  return container;
 }
