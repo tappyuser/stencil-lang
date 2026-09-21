@@ -6,6 +6,7 @@
 #include <stdlib.h>
 
 enum token_type {
+  NULLTYPE = 0,
   // Literals
   NUMERICLITERAL = 1,
   CHARACTERLITERAL,

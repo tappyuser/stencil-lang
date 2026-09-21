@@ -3,29 +3,77 @@
 #include <stdio.h>
 #include <string.h>
 
-void DO_test(bool value) {
-  static size_t test_no = 1;
-  if (value) {
-    printf("\033[32mTest %zu pass\033[0m\n", test_no);
-  } else {
-    printf("\033[31mTest %zu fail\033[0m\n", test_no);
+typedef struct _test {
+  bool status;
+  string_t *value_of_failure;
+} test_t;
+
+static test_t TEST_string_substring() {
+  string_t *dummy_text = string_create("This works", 0);
+  string_t *sub_text = string_new(0); /// Empty string
+
+  test_t ret_val = {true};
+
+  /// Case 1: The begining of the string_t
+  string_substring(dummy_text, sub_text, (size_t)0, (size_t)4);
+  if (strncmp(sub_text->content, dummy_text->content, 4) != 0) {
+    ret_val.status = false;
+    ret_val.value_of_failure = sub_text;
+    return ret_val;
   }
-  test_no++;
+
+  /// Case 2: The last character in a string_t
+  string_substring(dummy_text, sub_text, dummy_text->size - 1,
+                   dummy_text->size);
+  if (strncmp(sub_text->content, dummy_text->content + dummy_text->size - 1,
+              1) != 0) {
+    ret_val.status = false;
+    ret_val.value_of_failure = sub_text;
+    return ret_val;
+  }
+
+  /// Case 3: The whole string_t
+  string_substring(dummy_text, sub_text, (size_t)0, (size_t)dummy_text->size);
+  if (strncmp(sub_text->content, dummy_text->content, dummy_text->size) != 0) {
+    ret_val.status = false;
+    ret_val.value_of_failure = sub_text;
+    return ret_val;
+  }
+
+  return ret_val;
 }
 
-extern bool TEST_string_substring() {
-  string_t *dummy_text = string_create("This works", 0);
-  string_t *sub_text = string_new(0);
-  string_substring(dummy_text, sub_text, (size_t)0, (size_t)4);
+static test_t TEST_string_view_to_string() {
+  string_t *dummy_text = string_create("Some Dummy Text To Be Used", 0);
+  string_view_t *view = string_view(dummy_text->content, (size_t)5, (size_t)10);
 
-  if (!(strncmp(sub_text->content, dummy_text->content, 4))) {
-    return true;
+  test_t ret_val = {true};
+
+  /// Actual test
+  string_t *converted_view = string_view_to_string(view);
+  if (strncmp(converted_view->content, "Dummy", 5) != 0) {
+    ret_val.status = false;
+    ret_val.value_of_failure = converted_view;
+    return ret_val;
   }
 
-  return false;
+  return ret_val;
+}
+
+static void DO_test(test_t value, size_t test_no) {
+  /// The value is a test_t type containing both the status of the test and the
+  /// string of the test in case of failure.
+  /// The test_no is the idenfifier of the test.
+  if (value.status) {
+    printf("\033[32mTest %zu pass\033[0m\n", test_no);
+  } else {
+    printf("\033[31mTest %zu fail:\033[0m %s\n", test_no,
+           value.value_of_failure->content);
+  }
 }
 
 int main() {
-  DO_test(TEST_string_substring());
+  DO_test(TEST_string_substring(), 1);
+  DO_test(TEST_string_view_to_string(), 2);
   return 0;
 }

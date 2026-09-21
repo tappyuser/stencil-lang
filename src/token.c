@@ -274,13 +274,13 @@ extern string_t *_format_token_list(token_t *token_list) {
 
   string_t *token_format = string_new(0);
   while (currentptr->next != nullptr) {
-    auto tok = (string_view_t *)(currentptr->value);
-    if (*(tok->begin) == '\n') {
+    auto tok = (string_t *)(currentptr->value);
+    if (*(tok->content) == '\n') {
       char k;
       scanf("%c", &k);
       prints(token_format->content, token_format->size);
     }
-    string_push(token_format, tok->begin, tok->size);
+    string_push(token_format, tok->content, tok->size);
     string_push(token_format, " ->", (size_t)3);
 
     currentptr = currentptr->next;

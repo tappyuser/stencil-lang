@@ -12,8 +12,8 @@ extern token_t *lex_parse(const string_t *const source) {
   /// passed to the get_token function
   size_t index = 0;
   token_t *t_list = nullptr; /// linked list that contains tokens
-  enum token_type
-      token_id; /// The enum token_type is defined in the lexer.h header file
+  enum token_type token_id =
+      NULLTYPE; /// The enum token_type is defined in the lexer.h header file
 
   while (index < source->size) {
     string_view_t *token = get_token(source, &index);
@@ -117,12 +117,12 @@ extern token_t *lex_parse(const string_t *const source) {
       /// names
     default:
       /// The rest that needs to be handled is are the alphanumerics like
-      /// identifiers and keywords and the invalid tokens
+      /// identifiers, and keywords and the invalid tokens
 
       /// Each character in the current token would be iterated through to check
       /// that it is a valid token. A valid alphanumeric token is one that
       /// contains alphabetic characters and(or) an underscore. It must not
-      /// start with a number for an identifiers or keywords but can contain a
+      /// start with a number for identifiers or keywords but can contain a
       /// number after an alphabetic character or an underscore.
       char _err_token[1024];
       /// 1024 characters is the maximum length for a variable
@@ -158,11 +158,13 @@ extern token_t *lex_parse(const string_t *const source) {
       }
       break;
     }
-    // char tmp_token[token->size + 1];
-    // memcpy(tmp_token, token->begin, token->size);
-    // memcpy(tmp_token, "\0", 1);
 
-    t_list = token_insert(t_list, (void *)token, token_id);
+    /// TODO: Correct the string_view_to_string function to properly null
+    /// terminate the return string
+    if (token_id != NULLTYPE) {
+      string_t *token_str = string_view_to_string(token);
+      t_list = token_insert(t_list, (void *)token_str, token_id);
+    }
   }
   /// Prints out the token value and the token id
   // auto p = t_list;
@@ -174,7 +176,7 @@ extern token_t *lex_parse(const string_t *const source) {
   //   p = p->next;
   // }
 
-  // string_t *formatted = _format_token_list(t_list);
-  // printsn(formatted->content, formatted->size);
+  string_t *formatted = _format_token_list(t_list);
+  printsn(formatted->content, formatted->size);
   return t_list;
 }

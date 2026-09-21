@@ -32,5 +32,5 @@ extern int8_t string_remove_at(string_t *arr, size_t _index_s, size_t _index_e);
 extern int8_t string_insert(string_t *arr, size_t index, char *elem, size_t n);
 extern string_t *string_substring(string_t *arr, string_t *dst, size_t _index_s,
                                   size_t _index_e);
-
+extern string_t *string_view_to_string(string_view_t *view);
 #endif

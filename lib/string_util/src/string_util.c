@@ -1,5 +1,6 @@
 #include "string_util.h"
 #include <errno.h>
+#include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -131,7 +132,9 @@ extern string_t *string_substring(string_t *arr, string_t *dst, size_t _index_s,
     return nullptr;
   }
   memcpy(dst->content, arr->content + _index_s, _index_e - _index_s);
-  dst->size = _index_e - _index_s + 1;
+  dst->size = _index_e - _index_s + 2;
+  dst->capacity = dst->capacity == 0 ? dst->size : dst->capacity;
+  *(dst->content + dst->size - 1) = '\0'; /// Null terminating the string
   return dst;
 }
 
@@ -148,7 +151,9 @@ extern string_view_t *string_view(char *arr, size_t _index_s, size_t _index_e) {
 }
 
 extern string_t *string_view_to_string(string_view_t *view) {
-  string_t *container = string_new(view->size);
+  string_t *container = string_new(view->size + (size_t)1);
   strncpy(container->content, view->begin, view->size);
+  *(container->content + container->size - 1) =
+      '\0'; /// Makeing sure to null terminate
   return container;
 }
