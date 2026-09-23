@@ -1,8 +1,8 @@
 # Stencil
 Stencil is a parser that parses C code and generates the CST(Concrete Syntax Tree). It would also be able to generate an AST (Abstract Syntax Tree). 
 
-## [Installation](#Installation)
-## [Building](#Building)
++ [Installation](#Installation)
++ [Building](#Building)
 
 # Installation
 ## Requirements
