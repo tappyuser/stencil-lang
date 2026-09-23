@@ -21,8 +21,8 @@ override LIBDIR := lib
 override INCLUDE := -I$(INCLUDEDIR)
 
 ifeq ($(DETECTED_OS), Windows)
-rwildcard = $(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
-override LIB := -l$(call rwildcard, src/, *.lib)
+LIBS := $(notdir $(patsubst %.lib,%,$(shell getlibs)))
+override LIB := $(foreach lib,$(LIBS),-l$(lib))
 else
 override LIB = -l$(patsubst lib%.a,%,$(LIBS))
 endif
