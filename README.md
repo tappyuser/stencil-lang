@@ -14,6 +14,7 @@ clang >=22.1.8 or gcc >=16.2.1
 ```
 
 ## MacOS
+Make sure to have homebrew installed
 ```zsh 
 sudo brew install make clang # or gcc
 ```
