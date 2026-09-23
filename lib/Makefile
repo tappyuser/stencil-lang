@@ -11,10 +11,11 @@ all: $(DIRS)
 
 ifeq ($(DETECTED_OS),Windows)
 LIBS := $(shell getlibs)
-endif 
+else 
 ifneq ($(DETECTED_OS),Unknown)
 override LIBS := $(foreach dir,$(DIRS),$(shell find $(dir) -name *.a 2> /dev/null))
 endif
+endif 
 
 $(DIRS): $(LIBS)
 	$(MAKE) -C $@
