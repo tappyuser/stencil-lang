@@ -174,13 +174,13 @@ extern token_t *lex_parse(const string_t *const source) {
 
 #ifdef _STNL_DEBUG_
   /// Prints out the token value and the token id
-  auto p = t_list;
-  while (p) {
-    auto tok = (string_view_t *)(p->value);
-    prints(tok->begin, tok->size);
-    printf(" %s\n\n", get_token_id_name(p->token_id)->content);
-    p = p->next;
-  }
+  // auto p = t_list;
+  // while (p) {
+  //   auto tok = (string_view_t *)(p->value);
+  //   prints(tok->begin, tok->size);
+  //   printf(" %s\n\n", get_token_id_name(p->token_id)->content);
+  //   p = p->next;
+  // }
 
   // prints out the contents of the list
   // string_t *formatted = _format_token_list(t_list);

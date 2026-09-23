@@ -36,11 +36,17 @@ int main(int argc, char **argv) {
     return EXIT_FAILURE;
   }
 
-#ifdef _STNL_DEBUG_
   printf("%s\n\n------------------\n", filecontents->content);
-#endif
 
   token_t *lex_tokens = lex_parse(filecontents);
+
+  auto p = lex_tokens;
+  while (p) {
+    auto tok = (string_view_t *)(p->value);
+    prints(tok->begin, tok->size);
+    printf(" %s\n\n", get_token_id_name(p->token_id)->content);
+    p = p->next;
+  }
 
   // string_t *formatted_tokens = _format_token_list(lex_tokens);
   // printf("%s\n", formatted_tokens->content);

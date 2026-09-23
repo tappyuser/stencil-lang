@@ -3,13 +3,9 @@ CC := clang
 # Include for platform detection
 include Makefile.in
 
-ifeq ($(DETECTED_OS),Windows)
-DEBUGGER := 
-else 
 DEBUGGER := gdb
-endif
 
-DEBUG := true # Set to false for release build and false for debug build
+DEBUG := false # Set to false for release build and true for debug build
 
 override SRCDIR := src
 override OBJDIR := obj
@@ -19,19 +15,14 @@ override INCLUDEDIR := include
 override LIBDIR := lib
 
 override INCLUDE := -I$(INCLUDEDIR)
-
-ifeq ($(DETECTED_OS), Windows)
-LIBS := $(notdir $(patsubst %.lib,%,$(shell getlibs)))
-override LIB := $(foreach lib,$(LIBS),-l$(lib))
-else
 override LIB = -l$(patsubst lib%.a,%,$(LIBS))
-endif
 
 DEPS := $(LIBDIR)
 
 CFLAGS := -Wall --std=c23 $(INCLUDE) 
 
-TARGET := $(BINDIR)/main
+#TARGET := $(BINDIR)/main
+TARGET := stencil
 SRCS := $(notdir $(wildcard $(SRCDIR)/*.c))
 OBJS := $(patsubst %.c, $(OBJDIR)/%.o, $(SRCS))
 LIBS = $(notdir $(wildcard $(LIBDIR)/*.a))
@@ -50,8 +41,10 @@ endif
 
 all: build
 
+ifeq ($(DEBUG),true)
 run: build
 	./$(TARGET) $(ARGS)
+endif
 
 build: $(TARGET)
 
