@@ -61,14 +61,18 @@ extern int8_t string_insert(string_t *arr, size_t index, char *elem, size_t n) {
   if (n > strlen(elem))
     n = strlen(elem);
 
+  char *temp = arr->content;
+
   /// Doubles the capacity if the container would not contain it. If the doubled
   /// capacity is still not enough, then it sets it to the required capacity.
   if (arr->capacity < arr->size + n) {
     arr->capacity =
-        arr->capacity * 2 < arr->size + n ? arr->size + n : arr->capacity * 2;
+        arr->capacity * 1 < arr->size + n ? arr->size + n : arr->capacity * 2;
+
+    /// Reallocate memory for the arr->content and copy the memory
+    arr->content = (char *)malloc(sizeof(char) * arr->capacity);
   }
 
-  arr->content = (char *)malloc(sizeof(char) * arr->capacity);
   if (arr->size == 0) {
     if (index != 0) { /// index must be zero when the array is empty
       fprintf(stderr,
@@ -77,8 +81,6 @@ extern int8_t string_insert(string_t *arr, size_t index, char *elem, size_t n) {
     }
     memcpy(arr->content, elem, n);
   } else {
-    /// Reallocate memory for the arr->content and copy the memory
-    char *temp = arr->content;
     /// Copy the element into the arr->content buffer
     memcpy(arr->content, temp,
            index); /// Copies the begining of the string until the index
@@ -86,8 +88,11 @@ extern int8_t string_insert(string_t *arr, size_t index, char *elem, size_t n) {
            n); /// Copies the text at the specific index
     memcpy(arr->content + index + n, temp + index,
            arr->size - index); /// Copies the rest of the array
-    free((void *)temp);
   }
+
+  /// Free the old memeory
+  if (temp != arr->content)
+    free((void *)temp);
   arr->size += n;
   return 0;
 }

@@ -226,8 +226,14 @@ extern string_view_t *get_token(const string_t *const text,
              contents[*index] == '+' || contents[*index] == '.' ||
              contents[*index] == '/' || contents[*index] == '&' ||
              contents[*index] == '|') {
-      while (contents[*index + 1] == contents[*index])
-        (*index)++;
+      if (contents[*index] == '/' && contents[*index + 1] == '/') {
+        /// Parse the full comment
+        while (contents[*index] != '\n')
+          (*index)++;
+      } else {
+        while (contents[*index + 1] == contents[*index])
+          (*index)++;
+      }
       token = string_view(contents, _start_index, *index + 1);
     }
 
@@ -274,14 +280,16 @@ extern string_t *_format_token_list(token_t *token_list) {
 
   string_t *token_format = string_new(0);
   while (currentptr->next != nullptr) {
-    auto tok = (string_t *)(currentptr->value);
-    if (*(tok->content) == '\n') {
-      char k;
-      scanf("%c", &k);
-      prints(token_format->content, token_format->size);
-    }
-    string_push(token_format, tok->content, tok->size);
-    string_push(token_format, " ->", (size_t)3);
+    auto tok = (string_view_t *)(currentptr->value);
+    /// Add the token to the token_format
+    string_push(token_format, tok->begin, tok->size);
+
+    string_push(token_format, " : ", 4);
+
+    string_t *id = get_token_id_name(currentptr->token_id);
+    string_push(token_format, id->content, id->size);
+
+    string_push(token_format, " -> ", (size_t)4);
 
     currentptr = currentptr->next;
   }

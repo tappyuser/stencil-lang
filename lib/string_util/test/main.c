@@ -60,6 +60,27 @@ static test_t TEST_string_view_to_string() {
   return ret_val;
 }
 
+static test_t TEST_string_insert() {
+  string_t *text = string_new(0);
+
+  test_t ret_val = {true};
+
+  string_insert(text, 0, "Hello", 5);
+  if (strncmp(text->content, "Hello", 5) != 0) {
+    ret_val.status = false;
+    ret_val.value_of_failure = text;
+    return ret_val;
+  }
+
+  string_insert(text, 5, " World", 6);
+  if (strncmp(text->content, "Hello World", 11) != 0) {
+    ret_val.status = false;
+    ret_val.value_of_failure = text;
+    return ret_val;
+  }
+  return ret_val;
+}
+
 static void DO_test(test_t value, size_t test_no) {
   /// The value is a test_t type containing both the status of the test and the
   /// string of the test in case of failure.
@@ -75,5 +96,6 @@ static void DO_test(test_t value, size_t test_no) {
 int main() {
   DO_test(TEST_string_substring(), 1);
   DO_test(TEST_string_view_to_string(), 2);
+  DO_test(TEST_string_insert(), 3);
   return 0;
 }

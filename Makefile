@@ -9,7 +9,7 @@ else
 DEBUGGER := gdb
 endif
 
-DEBUG := 1 # Set to 0 for release build and 1 for debug build
+DEBUG := true # Set to false for release build and false for debug build
 
 override SRCDIR := src
 override OBJDIR := obj
@@ -36,13 +36,16 @@ ARGS := "examples/test.stl"
 .PHONY: all build debug
 
 # Checking to enable the debug build
-ifeq ($(strip $(DEBUG)),1) 
+ifeq ($(strip $(DEBUG)),true) 
 CFLAGS := -g -O0 -D_STNL_DEBUG_ $(CFLAGS)
 else  
 CFLAGS := -O3 $(CFLAGS)
 endif
 
 all: build
+
+run: build
+	./$(TARGET) $(ARGS)
 
 build: $(TARGET)
 
@@ -55,8 +58,7 @@ $(TARGET): $(OBJS)
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	$(CC) $(CFLAGS) -c $^ -o $@
 
-run: $(TARGET)
-	./$^ $(ARGS)
+
 
 debug: $(TARGET)
 	$(DEBUGGER) --args ./$^ $(ARGS)

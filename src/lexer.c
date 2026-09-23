@@ -19,7 +19,7 @@ extern token_t *lex_parse(const string_t *const source) {
     string_view_t *token = get_token(source, &index);
     switch (*(token->begin)) {
     case '*':
-      if (memcmp(token->begin, "**", token->size) == 0) {
+      if (memcmp(token->begin, "**", (size_t)2) == 0) {
         /// for the raise to power operator
         token_id = OPPOW;
       } else {
@@ -28,7 +28,7 @@ extern token_t *lex_parse(const string_t *const source) {
       break;
 
     case '/':
-      if (memcmp(token->begin, "//", token->size) == 0) {
+      if (memcmp(token->begin, "//", (size_t)2) == 0) {
         token_id = S_COMMENT;
       } else {
         token_id = OPDIV;
@@ -36,7 +36,7 @@ extern token_t *lex_parse(const string_t *const source) {
       break;
 
     case '+':
-      if (memcmp(token->begin, "++", token->size) == 0) {
+      if (memcmp(token->begin, "++", (size_t)2) == 0) {
         token_id = INCREMENT;
       } else {
         token_id = OPADD;
@@ -44,7 +44,7 @@ extern token_t *lex_parse(const string_t *const source) {
       break;
 
     case '-':
-      if (memcmp(token->begin, "--", token->size) == 0) {
+      if (memcmp(token->begin, "--", (size_t)2) == 0) {
         token_id = DECREMENT;
       } else {
         token_id = OPSUB;
@@ -52,7 +52,7 @@ extern token_t *lex_parse(const string_t *const source) {
       break;
 
     case '=':
-      if (memcmp(token->begin, "==", token->size) == 0) {
+      if (memcmp(token->begin, "==", (size_t)2) == 0) {
         token_id = OPEQS;
       } else {
         token_id = OPEQU;
@@ -60,7 +60,7 @@ extern token_t *lex_parse(const string_t *const source) {
       break;
 
     case '.':
-      if (memcmp(token->begin, "...", token->size) == 0) {
+      if (memcmp(token->begin, "...", (size_t)3) == 0) {
         token_id = VARADIC;
       } else {
         token_id = OPDOT;
@@ -113,6 +113,14 @@ extern token_t *lex_parse(const string_t *const source) {
       token_id = NEWLINE;
       break;
 
+    case '#':
+      while (source->content[index] != '\n') {
+        index++;
+      }
+      index++;
+      token_id = NULLTYPE;
+      break;
+
       /// Handles numbers, keywords and identifiers ie function names, variable
       /// names
     default:
@@ -159,24 +167,24 @@ extern token_t *lex_parse(const string_t *const source) {
       break;
     }
 
-    /// TODO: Correct the string_view_to_string function to properly null
-    /// terminate the return string
-    if (token_id != NULLTYPE) {
-      string_t *token_str = string_view_to_string(token);
-      t_list = token_insert(t_list, (void *)token_str, token_id);
-    }
+    /// Add the token to the token list
+    if (token_id != NULLTYPE)
+      t_list = token_insert(t_list, (void *)token, token_id);
   }
-  /// Prints out the token value and the token id
-  // auto p = t_list;
-  // while (p) {
-  //   auto tok = (string_view_t *)(p->value);
-  //   // printf("---------------------------------\n");
-  //   prints(tok->begin, tok->size);
-  //   printf(" %s\n\n", get_token_id_name(p->token_id)->content);
-  //   p = p->next;
-  // }
 
-  string_t *formatted = _format_token_list(t_list);
-  printsn(formatted->content, formatted->size);
+#ifdef _STNL_DEBUG_
+  /// Prints out the token value and the token id
+  auto p = t_list;
+  while (p) {
+    auto tok = (string_view_t *)(p->value);
+    prints(tok->begin, tok->size);
+    printf(" %s\n\n", get_token_id_name(p->token_id)->content);
+    p = p->next;
+  }
+
+  // prints out the contents of the list
+  // string_t *formatted = _format_token_list(t_list);
+  // printsn(formatted->content, formatted->size);
+#endif /* ifdef _STNL_DEBUG_ */
   return t_list;
 }
