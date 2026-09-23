@@ -52,6 +52,6 @@ make build
 
 To run the project, make sure you are in the stencil-lang directory
 ```bash
-./bin/main
+./stencil examples/test.c
 ```
 

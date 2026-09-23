@@ -28,7 +28,7 @@ OBJS := $(patsubst %.c, $(OBJDIR)/%.o, $(SRCS))
 LIBS = $(notdir $(wildcard $(LIBDIR)/*.a))
 
 # Command line arguments to pass to the TARGET
-ARGS := "examples/test.stl"
+ARGS := "examples/test.c"
 
 .PHONY: all build debug
 
