@@ -40,6 +40,7 @@ int main(int argc, char **argv) {
 
   token_t *lex_tokens = lex_parse(filecontents);
 
+#ifdef _STNL_DEBUG_
   auto p = lex_tokens;
   while (p) {
     auto tok = (string_view_t *)(p->value);
@@ -47,9 +48,12 @@ int main(int argc, char **argv) {
     printf(" %s\n\n", get_token_id_name(p->token_id)->content);
     p = p->next;
   }
-
-  // string_t *formatted_tokens = _format_token_list(lex_tokens);
-  // printf("%s\n", formatted_tokens->content);
+#else
+  string_t *formatted_tokens = _format_token_list(lex_tokens);
+  // prints(formatted_tokens->content, formatted_tokens->size);
+  // putchar('\n');
+  printf("%s\n", formatted_tokens->content);
+#endif
 
   return EXIT_SUCCESS;
 }

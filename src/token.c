@@ -14,6 +14,10 @@ extern string_t *get_token_id_name(enum token_type token_id) {
     id = string_create("NUMERICLITERAL", 0);
     break;
 
+  case NULLTYPE:
+    id = string_create("NULLTYPE", 0);
+    break;
+
   case CHARACTERLITERAL:
     id = string_create("CHARACTERLITERAL", 0);
     break;
@@ -293,7 +297,7 @@ extern string_t *_format_token_list(token_t *token_list) {
 
     currentptr = currentptr->next;
   }
-  string_push(token_format, "null", (size_t)4);
+  string_push(token_format, "null\0", (size_t)5);
 
   return token_format;
 }
